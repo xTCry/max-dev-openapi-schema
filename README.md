@@ -7,7 +7,7 @@
 - `openapi.json` - текущая JSON-схема
 - `openapi.yaml` - текущая YAML-схема
 - `schemas/` - архив версий схемы
-- `site/` - статическая страница Swagger UI
+- `public/` - исходники статического сайта вместе со Swagger
 
 ## Updates
 
@@ -20,3 +20,23 @@ make schema-status
 make schema-diff
 make schema-commit
 ```
+
+## Web - local preview
+
+Собрать статический сайт:
+
+```bash
+./scripts/build-site.sh
+```
+
+Для загрузки схемы браузер должен открыть страницу через HTTP, а не как файл.
+Например:
+
+```bash
+npx serve dist
+```
+
+После запуска открыть `http://localhost:3000/`.
+
+- `http://localhost:3000/swagger/` - Swagger UI.
+- `http://localhost:3000/scalar/` - Scalar API Reference.

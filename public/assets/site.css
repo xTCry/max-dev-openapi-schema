@@ -1,0 +1,83 @@
+:root {
+  color: #18212f;
+  background: #f7f9fc;
+  font-family: system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.page {
+  width: min(100% - 2rem, 720px);
+  margin: 0 auto;
+  padding: 5rem 0;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: #1769d1;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.25rem, 7vw, 4.25rem);
+  letter-spacing: -0.05em;
+}
+
+.intro {
+  max-width: 38rem;
+  margin: 1.25rem 0 2rem;
+  color: #55657c;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.links {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.link-card {
+  border: 1px solid #d8e1ed;
+  border-radius: 0.5rem;
+  padding: 0.9rem 1rem;
+  color: #135ab6;
+  background: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.link-card:hover {
+  border-color: #1769d1;
+}
+
+.link-card--scalar {
+  border-color: #91c8a4;
+  color: #14733c;
+  background: #f2fbf5;
+}
+
+.link-card--scalar:hover {
+  border-color: #248a4d;
+}
+
+.link-card--file {
+  color: #536174;
+  background: #f8fafc;
+  font-family: ui-monospace, monospace;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.link-card--file:hover {
+  border-color: #b8c3d1;
+}
