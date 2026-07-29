@@ -45,12 +45,6 @@ npm run start
 npm run dev -- --url https://dev.max.ru/docs-api
 ```
 
-Для сохранения схемы в другой каталог используйте `--output-dir`:
-
-```bash
-npm run dev -- --output-dir ../../max-dev-openapi-schema-schema
-```
-
 Справка по аргументам:
 
 ```bash
@@ -87,22 +81,35 @@ cd ..
 git worktree add --orphan -b schema max-dev-openapi-schema-schema
 ```
 
-Обновление схемы из рабочей копии `parser`:
+Обновление схемы из корня репозитория:
 
 ```bash
-cd max-dev-openapi-schema/parser
-npm run dev -- --output-dir ../../max-dev-openapi-schema-schema
+make schema-update
 ```
 
-После выполнения команды проверить и закоммитить изменения нужно в рабочей
-копии `schema`:
+Проверка изменений:
 
 ```bash
-cd ../../max-dev-openapi-schema-schema
-git status
-git add openapi.json openapi.yaml schemas/
-git commit -m "chore(schema): update OpenAPI schema"
+make schema-status
+make schema-diff
 ```
+
+Создание коммита схемы:
+
+```bash
+make schema-commit
+```
+
+По умолчанию используется сообщение `chore(schema): update openapi schema`.
+Для первого коммита схемы:
+
+```bash
+make schema-commit SCHEMA_COMMIT_MESSAGE="chore(schema): add openapi schema"
+```
+
+`make schema-commit` добавляет только `openapi.json`, `openapi.yaml` и
+`schemas/`. Перед запуском нужно проверить изменения через `make schema-status`
+или `make schema-diff`.
 
 ### Проверки
 
