@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - schema
+    paths:
+      - "public/**"
+      - "openapi.yaml"
+      - "scripts/build-site.sh"
+      - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
 permissions:

@@ -12,7 +12,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: update-schema
+  group: pages
   cancel-in-progress: false
 
 jobs:
@@ -38,18 +38,18 @@ jobs:
         with:
           node-version: 24.13.0
           cache: npm
-          cache-dependency-path: parser/package-lock.json
+          cache-dependency-path: parser/parser/package-lock.json
 
       - name: install parser dependencies
-        working-directory: parser
+        working-directory: parser/parser
         run: npm ci
 
       - name: build parser
-        working-directory: parser
+        working-directory: parser/parser
         run: npm run build
 
       - name: update schema files
-        working-directory: parser
+        working-directory: parser/parser
         run: node dist/main.js --output-dir "$GITHUB_WORKSPACE"
 
       - name: commit schema changes
