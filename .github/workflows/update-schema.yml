@@ -1,0 +1,88 @@
+name: update schema
+
+on:
+  schedule:
+    - cron: "18 3 * * *"
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: update-schema
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - name: checkout schema
+        uses: actions/checkout@v6
+        with:
+          ref: schema
+
+      - name: checkout parser
+        uses: actions/checkout@v6
+        with:
+          ref: parser
+          path: parser
+          persist-credentials: false
+
+      - name: setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.13.0
+          cache: npm
+          cache-dependency-path: parser/package-lock.json
+
+      - name: install parser dependencies
+        working-directory: parser
+        run: npm ci
+
+      - name: build parser
+        working-directory: parser
+        run: npm run build
+
+      - name: update schema files
+        working-directory: parser
+        run: node dist/main.js --output-dir "$GITHUB_WORKSPACE"
+
+      - name: commit schema changes
+        id: commit
+        run: |
+          if [ -z "$(git status --porcelain -- openapi.json openapi.yaml schemas)" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          version="$(node -p "JSON.parse(require('node:fs').readFileSync('openapi.json', 'utf8')).info.version")"
+          git add openapi.json openapi.yaml schemas/
+          git commit -m "chore(schema): update openapi schema ${version}"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: configure pages
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/configure-pages@v5
+
+      - name: build static site
+        if: steps.commit.outputs.changed == 'true'
+        run: ./scripts/build-site.sh
+
+      - name: upload pages artifact
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+      - name: deploy to github pages
+        if: steps.commit.outputs.changed == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v4

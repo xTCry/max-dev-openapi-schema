@@ -40,3 +40,10 @@ npx serve dist
 
 - `http://localhost:3000/swagger/` - Swagger UI.
 - `http://localhost:3000/scalar/` - Scalar API Reference.
+
+## Automatic updates
+
+Workflow `.github/workflows/update-schema.yml` запускается вручную и каждый
+день в 06:18 по МСК. Он получает код из ветки `parser`, обновляет схему в ветке
+`schema` и создает коммит только при изменениях. После обновления schema
+workflow также публикует новую версию GitHub Pages.
