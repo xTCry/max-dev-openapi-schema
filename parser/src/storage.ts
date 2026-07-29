@@ -1,9 +1,10 @@
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { stringify as stringifyYaml } from 'yaml';
 
-const SCHEMAS_DIRECTORY = fileURLToPath(
-  new URL('../../schemas/', import.meta.url),
+const DEFAULT_OUTPUT_DIRECTORY = fileURLToPath(
+  new URL('../../', import.meta.url),
 );
 
 interface OpenApiInfo {
@@ -26,16 +27,12 @@ export interface SaveSchemaResult {
  */
 export async function saveSchema(
   schema: OpenApiSchema,
+  outputDirectory = DEFAULT_OUTPUT_DIRECTORY,
 ): Promise<SaveSchemaResult> {
-  const currentJsonPath = fileURLToPath(
-    new URL('../../openapi.json', import.meta.url),
-  );
-  const currentYamlPath = fileURLToPath(
-    new URL('../../openapi.yaml', import.meta.url),
-  );
+  const paths = getSchemaPaths(outputDirectory);
   const jsonWithNewline = `${JSON.stringify(schema, null, 2)}\n`;
   const version = getVersion(schema);
-  const existingJson = await readOptionalFile(currentJsonPath);
+  const existingJson = await readOptionalFile(paths.currentJson);
   const yaml = stringifyYaml(schema, {
     indent: 2,
     blockQuote: 'literal',
@@ -43,17 +40,18 @@ export async function saveSchema(
   });
 
   if (existingJson === jsonWithNewline) {
-    await updateCurrentYaml(currentYamlPath, yaml);
+    await updateCurrentYaml(paths.currentYaml, yaml);
     return { changed: false, version };
   }
 
   const archivePath = await getArchivePath(
+    paths.schemasDirectory,
     `schema-${formatDate(new Date())}-${version}`,
   );
 
-  await mkdir(SCHEMAS_DIRECTORY, { recursive: true });
-  await writeFile(currentJsonPath, jsonWithNewline);
-  await writeFile(currentYamlPath, yaml);
+  await mkdir(paths.schemasDirectory, { recursive: true });
+  await writeFile(paths.currentJson, jsonWithNewline);
+  await writeFile(paths.currentYaml, yaml);
   await writeFile(`${archivePath}.json`, jsonWithNewline);
   await writeFile(`${archivePath}.yaml`, yaml);
 
@@ -114,15 +112,30 @@ function formatDate(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
 
-async function getArchivePath(baseName: string): Promise<string> {
+function getSchemaPaths(outputDirectory: string): {
+  currentJson: string;
+  currentYaml: string;
+  schemasDirectory: string;
+} {
+  const directory = resolve(outputDirectory);
+
+  return {
+    currentJson: resolve(directory, 'openapi.json'),
+    currentYaml: resolve(directory, 'openapi.yaml'),
+    schemasDirectory: resolve(directory, 'schemas'),
+  };
+}
+
+async function getArchivePath(
+  schemasDirectory: string,
+  baseName: string,
+): Promise<string> {
   let suffix = 0;
 
   while (true) {
-    const candidate = fileURLToPath(
-      new URL(
-        `../../schemas/${baseName}${suffix === 0 ? '' : `-${suffix}`}`,
-        import.meta.url,
-      ),
+    const candidate = resolve(
+      schemasDirectory,
+      `${baseName}${suffix === 0 ? '' : `-${suffix}`}`,
     );
 
     if (

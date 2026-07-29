@@ -14,10 +14,11 @@ async function main(): Promise<void> {
   }
 
   const docsUrl = readDocsUrl();
+  const outputDirectory = readOutputDirectory();
   const schemaJson = await findSchemaJson(docsUrl);
   const schema = validateSchema(schemaJson);
   const migration = migrateSchema(schema);
-  const result = await saveSchema(schema);
+  const result = await saveSchema(schema, outputDirectory);
 
   for (const message of migration.applied) {
     console.log(message);
@@ -146,13 +147,15 @@ async function findSchemaInScript(scriptUrl: string): Promise<string | null> {
 
 function printHelp(): void {
   console.log(`Использование:
-  npm run dev -- [--url <адрес>]
-  npm run build && npm run start -- [--url <адрес>]
+  npm run dev -- [--url <адрес>] [--output-dir <путь>]
+  npm run build && npm run start -- [--url <адрес>] [--output-dir <путь>]
 
 Опции:
   -h, --help          показать эту справку
   --url <адрес>       страница документации
-                     по умолчанию: ${DEFAULT_DOCS_URL}`);
+                     по умолчанию: ${DEFAULT_DOCS_URL}
+  --output-dir <путь> каталог для openapi.json, openapi.yaml и schemas/
+                     по умолчанию: корень репозитория`);
 }
 
 function readDocsUrl(): string {
@@ -173,6 +176,22 @@ function readDocsUrl(): string {
   } catch {
     throw new Error(`Некорректный адрес страницы: ${value}.`);
   }
+}
+
+function readOutputDirectory(): string | undefined {
+  const argumentIndex = process.argv.indexOf('--output-dir');
+
+  if (argumentIndex === -1) {
+    return undefined;
+  }
+
+  const value = process.argv[argumentIndex + 1];
+
+  if (!value) {
+    throw new Error('После аргумента --output-dir нужно указать путь.');
+  }
+
+  return value;
 }
 
 main().catch((error: unknown) => {

@@ -13,7 +13,8 @@
     "format": "prettier --write \"src/**/*.{ts,js}\"",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint ./src",
-    "lint:yaml": "cd .. && ./parser/node_modules/.bin/eslint --config parser/eslint.config.js openapi.yaml"
+    "lint:yaml": "cd .. && ./parser/node_modules/.bin/eslint --config parser/eslint.config.js openapi.yaml",
+    "test": "node --test src/**/*.test.ts"
   },
   "dependencies": {
     "acorn": "^8.18.0",

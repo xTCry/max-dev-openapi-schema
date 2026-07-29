@@ -45,6 +45,12 @@ npm run start
 npm run dev -- --url https://dev.max.ru/docs-api
 ```
 
+Для сохранения схемы в другой каталог используйте `--output-dir`:
+
+```bash
+npm run dev -- --output-dir ../../max-dev-openapi-schema-schema
+```
+
 Справка по аргументам:
 
 ```bash
@@ -68,6 +74,36 @@ schema-YYYY-MM-DD-VERSION.yaml
 Если JSON-схема не изменилась, новый архив не создается. YAML-файл при этом
 синхронизируется с актуальными правилами форматирования.
 
+### Работа со схемами
+
+Исходный код парсера хранится в ветке `parser`. Схемы нужно вести в отдельной
+ветке `schema`, открытой через git worktree. Это позволяет запускать парсер и
+готовить коммиты схем без переключения веток.
+
+Создание рабочей копии ветки `schema`:
+
+```bash
+cd ..
+git worktree add --orphan -b schema max-dev-openapi-schema-schema
+```
+
+Обновление схемы из рабочей копии `parser`:
+
+```bash
+cd max-dev-openapi-schema/parser
+npm run dev -- --output-dir ../../max-dev-openapi-schema-schema
+```
+
+После выполнения команды проверить и закоммитить изменения нужно в рабочей
+копии `schema`:
+
+```bash
+cd ../../max-dev-openapi-schema-schema
+git status
+git add openapi.json openapi.yaml schemas/
+git commit -m "chore(schema): update OpenAPI schema"
+```
+
 ### Проверки
 
 ```bash
@@ -75,6 +111,7 @@ npm run format
 npm run typecheck
 npm run lint
 npm run lint:yaml
+npm run test
 ```
 
 ### Известные исправления
