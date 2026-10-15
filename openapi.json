@@ -764,7 +764,7 @@
         "tags": [
           "chats"
         ],
-        "disable-notification": "<p style=\"margin: 8px 0 0 0;\"><strong>С 9 сентября 2026</strong> работа метода <code>POST /chats/{chatId}/members</code> будет ограничена, а <strong>с 30 сентября 2026</strong> он будет удалён</p><p style=\"margin: 8px 0 0 0;\">С 30 сентября API MAX не предоставляет готовой возможности для добавления участников в групповой чат. Однако мы постоянно работаем над расширением функциональности API — следите за обновлениями документации</p>",
+        "disable-notification": "<p style=\"margin: 8px 0 0 0;\"><strong>С 9 сентября 2026</strong> работа метода <code>POST /chats/{chatId}/members</code> ограничена</p>",
         "operationId": "addMembers",
         "description": "Добавляет участников в групповой чат\n\n Бот, чей токен `access_token` используется для авторизации, должен быть администратором этого чата с соответствующим правом `add_remove_members`. Чтобы получить информацию о правах бота, используйте [`GET /chats/-chatId-/members/admins`](/docs-api/methods/GET/chats/-chatId-/members/admins). Подробнее о правах — в описании [`POST /chats/{chatId}/members/admins`](/docs-api/methods/POST/chats/-chatId-/members/admins#Доступные%20права%20администратора)\n\n >Добавить подписчиков в канал с помощью этого метода нельзя \n\n**Пример запроса**:\n```bash\ncurl -X POST \"https://platform-api2.max.ru/chats/{chatId}/members\" \\\n  -H \"Authorization: {access_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n  \"user_ids\": [\"{user_id_1}\", \"{user_id_2}\"]\n}'\n```",
         "summary": "Добавление участников в групповой чат",
