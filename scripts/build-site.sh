@@ -8,4 +8,5 @@ mkdir -p "$output_directory"
 
 cp -R public/. "$output_directory"
 cp openapi.yaml "$output_directory/openapi.yaml"
+cp openapi.json "$output_directory/openapi.json"
 touch "$output_directory/.nojekyll"
