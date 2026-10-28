@@ -10,8 +10,8 @@
 
 ## Files
 
-- [`openapi.json`](./openapi.json) - снимок схемы в JSON
-- [`openapi.yaml`](./openapi.yaml) - снимок официальной схемы в YAML
+- [`openapi.json`](./openapi.json) - последняя схема, извлеченная парсером, в JSON
+- [`openapi.yaml`](./openapi.yaml) - последняя схема, извлеченная парсером, в YAML
 - [`schemas/`](./schemas/) - архив версий схемы
 - [`public/`](./public/) - исходники статического сайта вместе со Swagger
 
@@ -19,9 +19,15 @@
 
 Автоматическое обновление схемы отключено. За изменениями и актуальной версией
 следите в [репозитории MAX](https://github.com/max-messenger/api-schema).
+
+В ветке [`schema`](https://github.com/xTCry/max-dev-openapi-schema/tree/schema) хранится последняя выгрузка с сайта от 15 октября 2026 года.  
+В ветке [`official-schema`](https://github.com/xTCry/max-dev-openapi-schema/tree/official-schema) находится снимок схемы из репозитория MAX от 17 сентября 2026 года.
+Доступно [сравнение схем](https://github.com/xTCry/max-dev-openapi-schema/compare/1ec254e...official-schema#diff-d910ba2ef878f7db0223a966b81c8b3f3b65027bb39e4431bb05140171eece39).
+
+<!--
 Парсер находится в ветке `parser`. Из рабочей копии этой ветки схема
 обновляется командами:
-<!--
+
 ```bash
 make schema-update
 make schema-status
